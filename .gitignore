@@ -1,9 +1,119 @@
-.DS_Store
-cache/*
-.cache/*
-.qoder
+# ============================
+# 编译与构建产物
+# ============================
+build/
+cmake-build-*/
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.dSYM
+*.pdb
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CPackConfig.cmake
+CPackSourceConfig.cmake
+*.cmake
+!CMakeLists.txt
+!*.cmake.in
+.qoder/
 .qoder/*
-build
-build/*
-temp
-temp/*
+# ============================
+# 项目特定输出目录
+# ============================
+temp/
+cache/
+*.tar.gz
+*.tar.xz
+*.tar.bz2
+*.zip
+*.deb
+*.rpm
+*.dsc
+*.buildinfo
+*.changes
+
+# ============================
+# 操作系统元数据 (macOS / Windows)
+# ============================
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ============================
+# Debian 打包相关（保留 debian/ 目录，但排除 macOS 元数据）
+# ============================
+# 注意：debian/ 目录是打包源码的一部分，不应忽略整个目录。
+# 只忽略 macOS 元数据文件（这些会被 dpkg-source 视为二进制文件而报错）
+debian/._*
+debian/.DS_Store
+debian/*.debhelper
+debian/*.substvars
+debian/files
+debian/*.log
+debian/.debhelper/
+debian/debhelper-build-stamp
+
+# ============================
+# IDE / 编辑器
+# ============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+*.orig
+*.rej
+*.patch
+*.diff
+*.log
+*.tmp
+*.temp
+
+# ============================
+# Git 相关（通常无需额外，但保留）
+# ============================
+.git/
+.gitignore
+.gitmodules
+.gitattributes
+
+# ============================
+# 测试与临时文件
+# ============================
+test/
+tests/
+*.test
+*.out
+output.pdf
+hello.pdf
+*.log
+*.trs
+
+# ============================
+# 依赖管理（如果有）
+# ============================
+vcpkg_installed/
+conaninfo.txt
+conanbuildinfo.*
+cmake-build-*/
+
+# ============================
+# 其他
+# ============================
+*.pyc
+__pycache__/
+*.egg-info/
+*.rdb
+*.rdb-journal
