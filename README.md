@@ -1,5 +1,7 @@
 # webpdf HTML to PDF Tutorial
 
+English | [简体中文](README_CN.md)  
+
 ## Table of Contents
 
 - [Chapter 1 Introduction](#chapter-1-introduction)
