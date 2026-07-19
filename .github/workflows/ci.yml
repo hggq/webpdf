@@ -56,17 +56,17 @@ jobs:
       - name: Run examples
         shell: bash
         run: |
-          if [ -f "build/bin/$BUILD_TYPE/webpdf-hello.exe" ]; then
-            BIN="build/bin/$BUILD_TYPE"
+          if [ -f "example/webpdf-hello.exe" ]; then
             EXE=".exe"
           else
-            BIN="build/bin"
             EXE=""
           fi
-          "$BIN/webpdf-hello$EXE"
-          "$BIN/webpdf-render-html$EXE" content.html output.pdf
+          cd example
+          "./webpdf-hello$EXE"
+          "./webpdf-render-html$EXE"
           test -f hello.pdf
-          test -f output.pdf
+          test -f webpdf_tutorial.pdf
+          test -f webpdf_tutorial_en.pdf
 
       - name: Install
         shell: bash
@@ -103,6 +103,7 @@ jobs:
         with:
           name: pdfs-${{ matrix.os }}
           path: |
-            hello.pdf
-            output.pdf
+            example/hello.pdf
+            example/webpdf_tutorial.pdf
+            example/webpdf_tutorial_en.pdf
           if-no-files-found: ignore

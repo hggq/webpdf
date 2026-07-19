@@ -1,4 +1,6 @@
+#define _USE_MATH_DEFINES
 #include "parsesvg.h"
+#include <cmath>
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
@@ -576,8 +578,8 @@ void SVGRenderer::apply_element_transform(const std::map<std::string, std::strin
             d = args.size() >= 2 ? args[1] : a;
         } else if (func == "rotate") {
             double angle = (args.size() >= 1 ? args[0] : 0) * M_PI / 180.0;
-            double cos_a = cos(angle);
-            double sin_a = sin(angle);
+            double cos_a = std::cos(angle);
+            double sin_a = std::sin(angle);
             a = cos_a; b = sin_a; c = -sin_a; d = cos_a;
             if (args.size() >= 3) {
                 double cx = args[1], cy = args[2];
@@ -586,10 +588,10 @@ void SVGRenderer::apply_element_transform(const std::map<std::string, std::strin
             }
         } else if (func == "skewx") {
             double angle = (args.size() >= 1 ? args[0] : 0) * M_PI / 180.0;
-            c = tan(angle);
+            c = std::tan(angle);
         } else if (func == "skewy") {
             double angle = (args.size() >= 1 ? args[0] : 0) * M_PI / 180.0;
-            b = tan(angle);
+            b = std::tan(angle);
         }
 
         pdf->_out(fmt(a) + " " + fmt(b) + " " + fmt(c) + " " + fmt(d) + " " + fmt(e) + " " + fmt(f) + " cm");
@@ -1102,21 +1104,21 @@ void SVGRenderer::draw_path(const std::map<std::string, std::string>& attrs) {
                     }
                     
                     double phi = x_axis_rot * M_PI / 180.0;
-                    double cos_phi = cos(phi);
-                    double sin_phi = sin(phi);
+                    double cos_phi = std::cos(phi);
+                    double sin_phi = std::sin(phi);
                     
                     double dx = (x1 - x2) / 2.0;
                     double dy = (y1 - y2) / 2.0;
                     double x1_prime = cos_phi * dx + sin_phi * dy;
                     double y1_prime = -sin_phi * dx + cos_phi * dy;
                     
-                    rx = fabs(rx);
-                    ry = fabs(ry);
+                    rx = std::fabs(rx);
+                    ry = std::fabs(ry);
                     
                     double scale = (x1_prime * x1_prime) / (rx * rx) + (y1_prime * y1_prime) / (ry * ry);
                     if (scale > 1) {
-                        rx *= sqrt(scale);
-                        ry *= sqrt(scale);
+                        rx *= std::sqrt(scale);
+                        ry *= std::sqrt(scale);
                     }
                     
                     double rx_sq = rx * rx;
@@ -1130,7 +1132,7 @@ void SVGRenderer::draw_path(const std::map<std::string, std::string>& attrs) {
                     double num = rx_sq * ry_sq - rx_sq * y1_prime_sq - ry_sq * x1_prime_sq;
                     if (num < 0) num = 0;
                     double den = rx_sq * y1_prime_sq + ry_sq * x1_prime_sq;
-                    double coef = (den > 0) ? sqrt(num / den) : 0;
+                    double coef = (den > 0) ? std::sqrt(num / den) : 0;
                     if (large_arc_flag == sweep_flag) coef = -coef;
 
                     double cx_prime = coef * (rx * y1_prime / ry);
@@ -1141,12 +1143,12 @@ void SVGRenderer::draw_path(const std::map<std::string, std::string>& attrs) {
 
                     // Signed angle between two vectors (u -> v)
                     auto vec_angle = [](double ux, double uy, double vx, double vy) {
-                        double len = sqrt((ux * ux + uy * uy) * (vx * vx + vy * vy));
+                        double len = std::sqrt((ux * ux + uy * uy) * (vx * vx + vy * vy));
                         if (len == 0) return 0.0;
                         double c = (ux * vx + uy * vy) / len;
                         if (c < -1) c = -1;
                         if (c > 1) c = 1;
-                        double a = acos(c);
+                        double a = std::acos(c);
                         if (ux * vy - uy * vx < 0) a = -a;
                         return a;
                     };
@@ -1161,10 +1163,10 @@ void SVGRenderer::draw_path(const std::map<std::string, std::string>& attrs) {
                     if (sweep_flag == 0 && delta_theta > 0) delta_theta -= 2 * M_PI;
                     else if (sweep_flag == 1 && delta_theta < 0) delta_theta += 2 * M_PI;
 
-                    int num_segments = (int)ceil(fabs(delta_theta) / (M_PI / 2));
+                    int num_segments = (int)std::ceil(std::fabs(delta_theta) / (M_PI / 2));
                     if (num_segments == 0) num_segments = 1;
                     double seg = delta_theta / num_segments;
-                    double alpha = 4.0 / 3.0 * tan(seg / 4.0);
+                    double alpha = 4.0 / 3.0 * std::tan(seg / 4.0);
 
                     // Map a point in unrotated ellipse-local coords to page coords
                     auto map_x = [&](double ex, double ey) { return cx + cos_phi * ex - sin_phi * ey; };
@@ -1173,8 +1175,8 @@ void SVGRenderer::draw_path(const std::map<std::string, std::string>& attrs) {
                     double t_ang = theta1;
                     for (int j = 0; j < num_segments; j++) {
                         double t_next = t_ang + seg;
-                        double cos1 = cos(t_ang), sin1 = sin(t_ang);
-                        double cos2 = cos(t_next), sin2 = sin(t_next);
+                        double cos1 = std::cos(t_ang), sin1 = std::sin(t_ang);
+                        double cos2 = std::cos(t_next), sin2 = std::sin(t_next);
 
                         // Ellipse-local endpoints and tangents
                         double e1x = rx * cos1, e1y = ry * sin1;
