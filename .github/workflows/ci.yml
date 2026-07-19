@@ -60,21 +60,16 @@ jobs:
           if [ "$RUNNER_OS" = "Windows" ]; then
             EXE=".exe"
           fi
-          echo "Runner OS: $RUNNER_OS"
-          echo "Current directory: $(pwd)"
-          echo "Listing example directory:"
-          ls -la example
           cd example
-          echo "Changed to example directory: $(pwd)"
-          ls -la
           HELLO="./webpdf-hello$EXE"
           RENDER="./webpdf-render-html$EXE"
-          echo "Running: $HELLO"
-          $HELLO
-          echo "Running: $RENDER"
-          $RENDER
-          echo "Checking output files:"
-          ls -la *.pdf
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cmd /c "$HELLO"
+            cmd /c "$RENDER"
+          else
+            $HELLO
+            $RENDER
+          fi
           test -f hello.pdf
           test -f webpdf_tutorial.pdf
           test -f webpdf_tutorial_en.pdf
