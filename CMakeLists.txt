@@ -114,11 +114,7 @@ target_include_directories(webpdf
 
 # zlib linkage.
 if(_webpdf_zlib_bundled)
-    if(BUILD_SHARED_LIBS AND TARGET zlib)
-        set(_webpdf_zlib_link zlib)
-    else()
-        set(_webpdf_zlib_link zlibstatic)
-    endif()
+    set(_webpdf_zlib_link zlibstatic)
     target_include_directories(webpdf PRIVATE "${zlib_SOURCE_DIR}" "${zlib_BINARY_DIR}")
     # Bundled zlib is a build-time detail; keep it out of the exported usage
     # requirements so install(EXPORT) does not require the zlib target.

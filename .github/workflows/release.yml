@@ -109,7 +109,7 @@ jobs:
         shell: bash
         run: |
           EXTRA=""
-          if [ "$RUNNER_OS" = "Windows" ]; then EXTRA="-DBUILD_SHARED_LIBS=ON"; fi
+          if [ "$RUNNER_OS" != "Windows" ]; then EXTRA="-DBUILD_SHARED_LIBS=ON"; fi
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
             -DWEBPDF_BUILD_EXAMPLES=OFF \
