@@ -23,6 +23,8 @@ CPackSourceConfig.cmake
 !*.cmake.in
 .qoder/
 .qoder/*
+debian/._*
+debian/.DS_Store
 # ============================
 # 项目特定输出目录
 # ============================
