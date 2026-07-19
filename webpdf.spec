@@ -1,20 +1,16 @@
-# webpdf.spec
-
 Name:           webpdf
-Version:        1.9.0
-Release:        1%{?dist}
+Version:        1.0.1
+Release:        7%{?dist}
 Summary:        HTML/CSS/SVG to PDF renderer library
 
 License:        MIT
 URL:            https://github.com/hggq/webpdf
-Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        webpdf-1.0.1.tar.gz
 
 BuildRequires:  cmake >= 3.16
 BuildRequires:  gcc-c++
 BuildRequires:  zlib-devel
-# 如果项目使用了其他库，在这里添加 BuildRequires
 
-# 运行时依赖
 Requires:       zlib
 
 %description
@@ -29,37 +25,30 @@ command-line interface for PDF generation.
 %cmake \
     -DWEBPDF_BUILD_EXAMPLES=ON \
     -DWEBPDF_INSTALL=ON \
-    -DWEBPDF_INSTALL_FONTS=ON \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=%{_prefix}
+    -DCMAKE_SKIP_RPATH=ON
 %cmake_build
 
 %install
 %cmake_install
 
-# 清理多余的文件（如果有）
-rm -rf %{buildroot}%{_datadir}/webpdf/example/fonts
+# 手动安装示例程序（它们未被 CMake 安装）
+mkdir -p %{buildroot}%{_bindir}
+install -m 755 %{_builddir}/%{name}-%{version}/example/webpdf-hello %{buildroot}%{_bindir}/
+install -m 755 %{_builddir}/%{name}-%{version}/example/webpdf-render-html %{buildroot}%{_bindir}/
 
 %files
-# 文档
-%doc README.md README_CN.md LICENSE
-
-# 头文件
+%doc README.md LICENSE
 %{_includedir}/webpdf/*.h
-
-# 库文件
 %{_libdir}/libwebpdf.so.*
+%{_libdir}/libwebpdf.so
 %{_libdir}/cmake/webpdf/
 %{_libdir}/pkgconfig/webpdf.pc
-
-# 可执行文件
 %{_bindir}/webpdf
 %{_bindir}/webpdf-hello
 %{_bindir}/webpdf-render-html
-
-# 字体数据（可选）
 %{_datadir}/webpdf/example/fonts/
 
 %changelog
-* Sat Jul 19 2026 Your Name <your.email@example.com> - 1.9.0-1
-- Initial RPM release for webpdf 1.9.0
+* Sat Jul 18 2026 Your Name <email@example.com> - 1.0.1-7
+- Add missing unversioned libwebpdf.so symlink

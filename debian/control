@@ -1,0 +1,36 @@
+Source: webpdf
+Section: libs
+Priority: optional
+Maintainer: huanguuq@163.com
+Build-Depends: debhelper-compat (= 13),
+               cmake (>= 3.16),
+               g++,
+               libz-dev
+Standards-Version: 4.6.2
+Homepage: https://github.com/hggq/webpdf
+
+Package: libwebpdf1
+Architecture: any
+Multi-Arch: same
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: HTML/CSS/SVG to PDF renderer library (shared library)
+ webpdf is a C++ library for rendering HTML/CSS/SVG content to PDF files.
+ .
+ This package provides the shared library.
+
+Package: libwebpdf-dev
+Architecture: any
+Multi-Arch: same
+Depends: libwebpdf1 (= ${binary:Version}), ${misc:Depends}
+Description: HTML/CSS/SVG to PDF renderer library (development files)
+ webpdf is a C++ library for rendering HTML/CSS/SVG content to PDF files.
+ .
+ This package provides the development headers and cmake files.
+
+Package: webpdf
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: HTML/CSS/SVG to PDF renderer library (command-line tool)
+ webpdf is a C++ library for rendering HTML/CSS/SVG content to PDF files.
+ .
+ This package provides the command-line interface for PDF generation.

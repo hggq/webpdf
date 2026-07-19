@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+		-DWEBPDF_BUILD_EXAMPLES=ON \
+		-DWEBPDF_INSTALL=ON \
+		-DWEBPDF_INSTALL_FONTS=ON
+
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/tmp
