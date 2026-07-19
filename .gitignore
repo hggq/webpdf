@@ -1,0 +1,7 @@
+.DS_Store
+cache/*
+.cache/*
+.qoder
+.qoder/*
+build
+build/*

@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux (gcc)
+            os: ubuntu-latest
+          - name: macOS (clang)
+            os: macos-latest
+          - name: Windows (msvc)
+            os: windows-latest
+
+    env:
+      BUILD_TYPE: Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install zlib (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y zlib1g-dev
+
+      # macOS ships zlib with the SDK.
+      # Windows has no system zlib: WEBPDF_FETCH_ZLIB downloads & builds it.
+
+      - name: Configure
+        shell: bash
+        run: |
+          # On Windows there is no system zlib, so it is fetched and bundled.
+          # A static lib cannot embed that zlib, so build a shared library there
+          # (zlib is linked into webpdf.dll and downstream consumers stay clean).
+          EXTRA=""
+          if [ "$RUNNER_OS" = "Windows" ]; then EXTRA="-DBUILD_SHARED_LIBS=ON"; fi
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+            -DCMAKE_INSTALL_PREFIX="$PWD/_install" \
+            -DWEBPDF_FETCH_ZLIB=ON \
+            $EXTRA
+
+      - name: Build
+        shell: bash
+        run: cmake --build build --config $BUILD_TYPE -j
+
+      - name: Run examples
+        shell: bash
+        run: |
+          if [ -f "build/bin/$BUILD_TYPE/webpdf-hello.exe" ]; then
+            BIN="build/bin/$BUILD_TYPE"
+            EXE=".exe"
+          else
+            BIN="build/bin"
+            EXE=""
+          fi
+          "$BIN/webpdf-hello$EXE"
+          "$BIN/webpdf-render-html$EXE" content.html output.pdf
+          test -f hello.pdf
+          test -f output.pdf
+
+      - name: Install
+        shell: bash
+        run: cmake --install build --config $BUILD_TYPE
+
+      - name: Verify downstream find_package(webpdf)
+        shell: bash
+        run: |
+          mkdir -p _consumer
+          cat > _consumer/main.cpp <<'EOF'
+          #include <webpdf.h>
+          #include <memory>
+          int main() {
+              auto pdf = std::make_unique<pz::webpdf>();
+              pdf->AddPage();
+              return 0;
+          }
+          EOF
+          cat > _consumer/CMakeLists.txt <<'EOF'
+          cmake_minimum_required(VERSION 3.16)
+          project(consumer LANGUAGES CXX)
+          find_package(webpdf CONFIG REQUIRED)
+          add_executable(consumer main.cpp)
+          target_link_libraries(consumer PRIVATE webpdf::webpdf)
+          EOF
+          cmake -S _consumer -B _consumer/build \
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+            -DCMAKE_PREFIX_PATH="$PWD/_install"
+          cmake --build _consumer/build --config $BUILD_TYPE
+
+      - name: Upload example PDFs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfs-${{ matrix.os }}
+          path: |
+            hello.pdf
+            output.pdf
+          if-no-files-found: ignore

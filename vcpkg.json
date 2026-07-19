@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "webpdf",
+  "version": "1.9.0",
+  "description": "HTML/CSS/SVG to PDF renderer library",
+  "homepage": "https://github.com/hggq/webpdf",
+  "license": "MIT",
+  "dependencies": [
+    "zlib",
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ]
+}
