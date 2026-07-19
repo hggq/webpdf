@@ -175,6 +175,14 @@ if(WEBPDF_BUILD_EXAMPLES)
         RUNTIME_OUTPUT_DIRECTORY "${WEBPDF_EXAMPLE_BIN_DIR}"
         RUNTIME_OUTPUT_DIRECTORY_DEBUG "${WEBPDF_EXAMPLE_BIN_DIR}"
         RUNTIME_OUTPUT_DIRECTORY_RELEASE "${WEBPDF_EXAMPLE_BIN_DIR}")
+
+    add_executable(webpdf_cli example/webpdf.cpp)
+    target_link_libraries(webpdf_cli PRIVATE webpdf::webpdf)
+    set_target_properties(webpdf_cli PROPERTIES
+        OUTPUT_NAME "webpdf"
+        RUNTIME_OUTPUT_DIRECTORY "${WEBPDF_EXAMPLE_BIN_DIR}"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${WEBPDF_EXAMPLE_BIN_DIR}"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${WEBPDF_EXAMPLE_BIN_DIR}")
 endif()
 
 # ---------------------------------------------------------------------------
@@ -197,6 +205,11 @@ if(WEBPDF_INSTALL)
     if(WEBPDF_INSTALL_FONTS)
         install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/example/font/"
             DESTINATION ${CMAKE_INSTALL_DATADIR}/webpdf/example/fonts)
+    endif()
+
+    if(WEBPDF_BUILD_EXAMPLES)
+        install(TARGETS webpdf_cli
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     endif()
 
     install(EXPORT webpdfTargets
