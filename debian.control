@@ -1,8 +1,8 @@
 Source: webpdf
 Section: libs
 Priority: optional
-Maintainer: huanguuq@163.com
-Build-Depends: debhelper-compat (= 13),
+Maintainer: huanguuq <huanguuq@163.com>
+Build-Depends: debhelper (>= 13),
                cmake (>= 3.16),
                g++,
                libz-dev

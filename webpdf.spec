@@ -5,7 +5,7 @@ Summary:        HTML/CSS/SVG to PDF renderer library
 
 License:        MIT
 URL:            https://github.com/hggq/webpdf
-Source0:        webpdf-1.0.1.tar.gz
+Source0:        webpdf_1.0.1.tar.gz
 
 BuildRequires:  cmake >= 3.16
 BuildRequires:  gcc-c++

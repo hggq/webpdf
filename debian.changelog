@@ -1,0 +1,6 @@
+webpdf (1.0.1-1) unstable; urgency=medium
+
+  * Initial Debian packaging for webpdf 1.0.1.
+  * Build command-line tool and install fonts.
+
+ -- huanguuq <huanguuq@163.com>  Sat, 19 Jul 2026 12:00:00 +0800
