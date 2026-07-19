@@ -56,14 +56,25 @@ jobs:
       - name: Run examples
         shell: bash
         run: |
-          if [ -f "example/webpdf-hello.exe" ]; then
+          EXE=""
+          if [ "$RUNNER_OS" = "Windows" ]; then
             EXE=".exe"
-          else
-            EXE=""
           fi
+          echo "Runner OS: $RUNNER_OS"
+          echo "Current directory: $(pwd)"
+          echo "Listing example directory:"
+          ls -la example
           cd example
-          "./webpdf-hello$EXE"
-          "./webpdf-render-html$EXE"
+          echo "Changed to example directory: $(pwd)"
+          ls -la
+          HELLO="./webpdf-hello$EXE"
+          RENDER="./webpdf-render-html$EXE"
+          echo "Running: $HELLO"
+          $HELLO
+          echo "Running: $RENDER"
+          $RENDER
+          echo "Checking output files:"
+          ls -la *.pdf
           test -f hello.pdf
           test -f webpdf_tutorial.pdf
           test -f webpdf_tutorial_en.pdf
